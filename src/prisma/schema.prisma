@@ -1,0 +1,65 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// generator client {
+//   provider = "prisma-client-js"
+// }
+
+// datasource db {
+//   provider = "postgresql"
+//   url      = env("DATABASE_URL")
+// }
+
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int    @id @default(autoincrement())
+  first_name String
+  last_name  String
+  phone_no   BigInt @unique
+  email      String @unique
+  age        Int
+  gender     Gender
+  height     Int?
+  weight     Float?
+
+  batch    Batch @relation(fields: [batch_id], references: [id])
+  batch_id Int   @default(0)
+
+  payment    Payment @relation(fields: [payment_id], references: [id])
+  payment_id Int     @default(0)
+
+  @@index([email, phone_no])
+}
+
+model Batch {
+  id Int @id @default(autoincrement())
+  // batch User?
+
+  batch_capacity_max     Int
+  batch_capacity_current Int
+  users                   User[]
+}
+
+model Payment {
+  id             Int      @id @default(autoincrement())
+  // payment        User?
+  payment_date   DateTime
+  payment_method String
+  users           User[]
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
